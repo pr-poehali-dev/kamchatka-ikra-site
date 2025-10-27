@@ -7,6 +7,7 @@ import CartSheet from '@/components/CartSheet';
 import OrderDialog from '@/components/OrderDialog';
 import ContactDialog from '@/components/ContactDialog';
 import DeliveryDialog from '@/components/DeliveryDialog';
+import DeliveryDialogMobile from '@/components/DeliveryDialogMobile';
 import OrderFormDialog from '@/components/OrderFormDialog';
 import { useToast } from '@/hooks/use-toast';
 import { getRecommendations } from '@/lib/quiz-recommendations';
@@ -95,6 +96,7 @@ export default function Index() {
   const [showResults, setShowResults] = useState(false);
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
 
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
@@ -147,7 +149,8 @@ export default function Index() {
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
               <Icon name="Shell" className="text-white" size={20} />
             </div>
-            <span className="font-heading font-bold text-lg">Камчатская икра премиум-класса</span>
+            <span className="font-heading font-bold text-lg hidden sm:inline">Камчатская икра премиум-класса</span>
+            <span className="font-heading font-bold text-base sm:hidden">Камчатская икра</span>
           </div>
           
           <nav className="hidden md:flex gap-6 text-sm items-center">
@@ -157,12 +160,43 @@ export default function Index() {
             <a href="#quiz" className="hover:text-primary transition-colors">Подбор товара</a>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <a href="tel:+79051785769" className="hidden md:block text-sm font-medium">+7 (905) 178-57-69</a>
+          <nav className="md:hidden flex gap-4 text-sm items-center">
+            <a href="/" className="hover:text-primary transition-colors">Главная</a>
+            <a href="/caviar" className="hover:text-primary transition-colors">Икра</a>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="hover:text-primary transition-colors"
+            >
+              <Icon name="Menu" size={20} />
+            </button>
+          </nav>
+
+          <div className="hidden md:flex items-center gap-3">
+            <a href="tel:+79051785769" className="text-sm font-medium">+7 (905) 178-57-69</a>
             <ContactDialog />
             <CartSheet onCheckout={() => setOrderDialogOpen(true)} />
           </div>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="container mx-auto px-4 py-4 space-y-3">
+              <DeliveryDialogMobile />
+              <a
+                href="tel:+79051785769"
+                className="block py-2 hover:text-primary transition-colors flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Icon name="Phone" size={18} />
+                +7 (905) 178-57-69
+              </a>
+              <div className="flex gap-2 pt-2">
+                <ContactDialog />
+                <CartSheet onCheckout={() => setOrderDialogOpen(true)} />
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <section className="pt-32 pb-20 px-4 bg-gradient-to-b from-gray-50 to-white">

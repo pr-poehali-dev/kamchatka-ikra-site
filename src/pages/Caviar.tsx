@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function Caviar() {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
 
   const handleAddToCart = (product: typeof products[0]) => {
@@ -53,19 +54,41 @@ export default function Caviar() {
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
               <Icon name="Shell" className="text-white" size={20} />
             </div>
-            <span className="font-heading font-bold text-lg">Камчатская икра</span>
+            <span className="font-heading font-bold text-lg hidden sm:inline">Камчатская икра</span>
           </a>
           
-          <nav className="hidden md:flex gap-6 text-sm">
+          <nav className="hidden md:flex gap-6 text-sm items-center">
             <a href="/" className="hover:text-primary transition-colors">Главная</a>
             <a href="/caviar" className="text-primary font-medium">Икра</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <nav className="md:hidden flex gap-4 text-sm items-center">
+            <a href="/" className="hover:text-primary transition-colors">Главная</a>
+            <a href="/caviar" className="text-primary font-medium">Икра</a>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="hover:text-primary transition-colors"
+            >
+              <Icon name="Menu" size={20} />
+            </button>
+          </nav>
+
+          <div className="hidden md:flex items-center gap-3">
             <ContactDialog />
             <CartSheet onCheckout={() => setOrderDialogOpen(true)} />
           </div>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="container mx-auto px-4 py-4 space-y-3">
+              <div className="flex gap-2">
+                <ContactDialog />
+                <CartSheet onCheckout={() => setOrderDialogOpen(true)} />
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <section className="pt-32 pb-12 px-4 bg-gradient-to-b from-gray-50 to-white">

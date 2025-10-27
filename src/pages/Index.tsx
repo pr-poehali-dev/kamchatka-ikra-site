@@ -3,6 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import Icon from '@/components/ui/icon';
+import CartSheet from '@/components/CartSheet';
+import OrderDialog from '@/components/OrderDialog';
+import ContactDialog from '@/components/ContactDialog';
+import DeliveryDialog from '@/components/DeliveryDialog';
+import { useToast } from '@/hooks/use-toast';
 
 interface QuizAnswer {
   question: number;
@@ -105,6 +110,8 @@ export default function Index() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
 
@@ -116,6 +123,23 @@ export default function Index() {
       setCurrentStep(currentStep + 1);
     } else {
       setShowResults(true);
+      sendQuizToTelegram(newAnswers);
+    }
+  };
+
+  const sendQuizToTelegram = async (quizAnswers: QuizAnswer[]) => {
+    try {
+      await fetch('https://functions.poehali.dev/fedd2fae-906d-4123-9212-69745eb0a734', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'quiz',
+          answers: quizAnswers,
+          recommendation: 'Автоматически подобрано'
+        })
+      });
+    } catch (error) {
+      console.error('Failed to send quiz results', error);
     }
   };
 
@@ -140,23 +164,17 @@ export default function Index() {
             <span className="font-heading font-bold text-lg">Камчатская икра премиум-класса</span>
           </div>
           
-          <nav className="hidden md:flex gap-6 text-sm">
-            <a href="#" className="hover:text-primary transition-colors">Главная</a>
-            <a href="#" className="hover:text-primary transition-colors">Икра</a>
-            <a href="#" className="hover:text-primary transition-colors">Крабы</a>
-            <a href="#" className="hover:text-primary transition-colors">О нас</a>
-            <a href="#" className="hover:text-primary transition-colors">Доставка</a>
+          <nav className="hidden md:flex gap-6 text-sm items-center">
+            <a href="/" className="hover:text-primary transition-colors">Главная</a>
+            <a href="/caviar" className="hover:text-primary transition-colors">Икра</a>
+            <DeliveryDialog />
             <a href="#quiz" className="hover:text-primary transition-colors">Подбор товара</a>
           </nav>
 
           <div className="flex items-center gap-3">
             <a href="tel:+79051785769" className="hidden md:block text-sm font-medium">+7 (905) 178-57-69</a>
-            <a href="https://t.me/79051785769" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
-              <Icon name="Send" size={20} className="text-primary" />
-            </a>
-            <a href="https://wa.me/79051785769" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
-              <Icon name="MessageCircle" size={20} className="text-primary" />
-            </a>
+            <ContactDialog />
+            <CartSheet onCheckout={() => setOrderDialogOpen(true)} />
           </div>
         </div>
       </header>
@@ -177,6 +195,57 @@ export default function Index() {
             Пройти подбор
             <Icon name="ArrowDown" className="ml-2" size={20} />
           </Button>
+        </div>
+      </section>
+
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="font-heading text-4xl font-bold mb-6">
+                О компании
+              </h2>
+              <p className="text-lg text-muted-foreground mb-4">
+                Мы — прямые поставщики свежей камчатской икры премиум-класса. 
+                Работаем напрямую с рыбозаводами на Камчатке, что позволяет гарантировать 
+                абсолютную свежесть и качество продукции.
+              </p>
+              <p className="text-lg text-muted-foreground mb-6">
+                Наша икра никогда не замораживается — только охлаждение при транспортировке. 
+                Сезон вылова длится всего 2 месяца в году, поэтому каждая банка — это эксклюзив.
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Icon name="Check" className="text-primary" size={20} />
+                  <span className="font-medium">Прямые поставки с Камчатки</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Icon name="Check" className="text-primary" size={20} />
+                  <span className="font-medium">Никогда не замораживаем</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Icon name="Check" className="text-primary" size={20} />
+                  <span className="font-medium">Доставка по всей России</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Icon name="Check" className="text-primary" size={20} />
+                  <span className="font-medium">Гарантия качества</span>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <img 
+                src="https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/3cf5f1db-0a37-4dc7-9e45-684c93b8085d.jpg"
+                alt="Икра"
+                className="rounded-lg shadow-lg h-64 object-cover"
+              />
+              <img 
+                src="https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/35ed52f9-6d71-4d5a-b665-2f9752703e04.jpg"
+                alt="Икра"
+                className="rounded-lg shadow-lg h-64 object-cover mt-8"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -242,8 +311,10 @@ export default function Index() {
                         <h3 className="font-heading font-bold text-lg mb-2">{rec.name}</h3>
                         <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
                         <p className="text-primary font-bold text-xl mb-4">{rec.price}</p>
-                        <Button className="w-full" size="sm">
-                          Заказать
+                        <Button className="w-full" size="sm" asChild>
+                          <a href="/caviar">
+                            Посмотреть в каталоге
+                          </a>
                         </Button>
                       </div>
                     </Card>
@@ -254,9 +325,11 @@ export default function Index() {
                   <Button onClick={resetQuiz} variant="outline" size="lg">
                     Пройти заново
                   </Button>
-                  <Button size="lg">
-                    Заказать по рекомендации
-                    <Icon name="ShoppingCart" className="ml-2" size={18} />
+                  <Button size="lg" asChild>
+                    <a href="/caviar">
+                      Перейти в каталог
+                      <Icon name="ShoppingCart" className="ml-2" size={18} />
+                    </a>
                   </Button>
                 </div>
               </Card>
@@ -351,6 +424,8 @@ export default function Index() {
           </div>
         </div>
       </footer>
+
+      <OrderDialog open={orderDialogOpen} onOpenChange={setOrderDialogOpen} />
     </div>
   );
 }

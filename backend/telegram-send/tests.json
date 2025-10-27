@@ -1,0 +1,31 @@
+{
+  "tests": [
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": "",
+      "bodyMatcher": "exact"
+    },
+    {
+      "name": "Handle quiz submission",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "type": "quiz",
+        "answers": [
+          {"question": 0, "answer": "kamchatka"},
+          {"question": 1, "answer": "holiday"}
+        ],
+        "recommendation": "Кета премиум",
+        "contact": "+7 905 123-45-67"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

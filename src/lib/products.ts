@@ -98,6 +98,39 @@ export const products: Product[] = [
     category: 'wholesale',
     features: ['Оптовая цена', 'Свежий улов', 'Для ресторанов'],
     inStock: true
+  },
+  {
+    id: 'beluga-imperial',
+    name: 'Белуга империал',
+    description: 'Королева чёрной икры с крупными икринками и нежным вкусом',
+    price: 45000,
+    weight: '500 г',
+    image: 'https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/c3abc963-c76d-45bf-8c2e-a44ee3124fde.jpg',
+    category: 'black',
+    features: ['Крупные икринки 3-4 мм', 'Самый деликатный вкус', 'Элитный сорт'],
+    inStock: true
+  },
+  {
+    id: 'osetr-classic',
+    name: 'Осетр классик',
+    description: 'Классическая чёрная икра с насыщенным вкусом',
+    price: 28000,
+    weight: '500 г',
+    image: 'https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/c3abc963-c76d-45bf-8c2e-a44ee3124fde.jpg',
+    category: 'black',
+    features: ['Средние икринки 2-3 мм', 'Насыщенный вкус', 'Лучшее соотношение цена-качество'],
+    inStock: true
+  },
+  {
+    id: 'sevruga-select',
+    name: 'Севрюга селект',
+    description: 'Изысканная чёрная икра с пикантным послевкусием',
+    price: 22000,
+    weight: '500 г',
+    image: 'https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/c3abc963-c76d-45bf-8c2e-a44ee3124fde.jpg',
+    category: 'black',
+    features: ['Мелкие икринки 1-2 мм', 'Пикантный вкус', 'Доступная цена'],
+    inStock: true
   }
 ];
 

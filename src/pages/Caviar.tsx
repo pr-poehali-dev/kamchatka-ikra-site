@@ -36,6 +36,7 @@ export default function Caviar() {
     { id: 'all', name: 'Всё' },
     { id: 'premium', name: 'Премиум' },
     { id: 'classic', name: 'Классика' },
+    { id: 'black', name: 'Чёрная икра' },
     { id: 'gift', name: 'Подарочные' },
     { id: 'wholesale', name: 'Оптом' }
   ];

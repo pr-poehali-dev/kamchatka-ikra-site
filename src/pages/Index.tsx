@@ -7,7 +7,9 @@ import CartSheet from '@/components/CartSheet';
 import OrderDialog from '@/components/OrderDialog';
 import ContactDialog from '@/components/ContactDialog';
 import DeliveryDialog from '@/components/DeliveryDialog';
+import OrderFormDialog from '@/components/OrderFormDialog';
 import { useToast } from '@/hooks/use-toast';
+import { getRecommendations } from '@/lib/quiz-recommendations';
 
 interface QuizAnswer {
   question: number;
@@ -85,32 +87,14 @@ const quizQuestions = [
   }
 ];
 
-const recommendations = {
-  premium: {
-    name: 'Кета премиум',
-    description: 'Крупная, насыщенная икра с деликатным вкусом',
-    price: '5 500 ₽/кг',
-    image: 'https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/3cf5f1db-0a37-4dc7-9e45-684c93b8085d.jpg'
-  },
-  classic: {
-    name: 'Горбуша классик',
-    description: 'Традиционный вкус, средний размер икринок',
-    price: '4 200 ₽/кг',
-    image: 'https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/35ed52f9-6d71-4d5a-b665-2f9752703e04.jpg'
-  },
-  gift: {
-    name: 'Подарочный набор',
-    description: 'Элегантная упаковка с золотой лентой',
-    price: '6 500 ₽',
-    image: 'https://cdn.poehali.dev/projects/c5a0e973-2c22-4703-9858-8c5d2cf6fb75/files/a805a0e1-eb09-4142-a586-3b54e2b3004a.jpg'
-  }
-};
+
 
 export default function Index() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
   const { toast } = useToast();
 
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
@@ -122,6 +106,8 @@ export default function Index() {
     if (currentStep < quizQuestions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
+      const recommended = getRecommendations(newAnswers);
+      setRecommendations(recommended);
       setShowResults(true);
       sendQuizToTelegram(newAnswers);
     }
@@ -300,7 +286,7 @@ export default function Index() {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
-                  {Object.values(recommendations).map((rec, idx) => (
+                  {recommendations.map((rec, idx) => (
                     <Card key={idx} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <img 
                         src={rec.image} 
@@ -310,7 +296,7 @@ export default function Index() {
                       <div className="p-4">
                         <h3 className="font-heading font-bold text-lg mb-2">{rec.name}</h3>
                         <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
-                        <p className="text-primary font-bold text-xl mb-4">{rec.price}</p>
+                        <p className="text-primary font-bold text-xl mb-4">{rec.price.toLocaleString()} ₽</p>
                         <Button className="w-full" size="sm" asChild>
                           <a href="/caviar">
                             Посмотреть в каталоге
@@ -384,6 +370,18 @@ export default function Index() {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white text-center">
+        <div className="container mx-auto max-w-2xl">
+          <h2 className="font-heading text-4xl font-bold mb-4">
+            Готовы сделать заказ?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Оставьте заявку, выберите интересующие товары, и наш менеджер свяжется с вами для уточнения деталей
+          </p>
+          <OrderFormDialog />
         </div>
       </section>
 
